@@ -23,6 +23,9 @@ app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', router);
+app.use('/api', router);
+
 //app.use('/', routes);
 //app.use('/users', users);
 
@@ -30,8 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 router.get('/', function (req, res) {
   res.json({ message: 'hello! welcome to our api!' });
 });
-app.use('/api', router);
-app.use('/', router);
+
 
 router.use(function (req, res, next) {
   // do logging
@@ -72,23 +74,27 @@ app.use(function (err, req, res, next) {
 var mongoose = require('mongoose');
 //mongoose.connect('mongodb://jalle007:12345678@jello.modulusmongo.net:27017/xeS9obyn'); // connect to our database
 
-mongoose.connect('mongodb://jalle007:12345678@ds147965.mlab.com:47965/cars123'); // connect to our database
+mongoose.connect('mongodb://heroku_5kqft6r4:i358iihreqt8stta42n8ok8ro4@ds061354.mlab.com:61354/heroku_5kqft6r4');
 var Car = require('./models/car');
-
+ 
 router.route('/cars')
   // create a bear (accessed at POST http://localhost:8080/api/cars)
   .post(function(req, res) {
       var car = new Car(); // create a new instance of the Car model
-      car.name = req.body.name; // set the car name (comes from the request)
+      car.name = req.body.name;
+      car.model = req.body.model;
+      car.year = req.body.year;
+
       // save the car and check for errors
       car.save(function(err) {
         if (err)
           res.send(err);
         res.json({ message: 'car created!' });
       });
-    })
+  })
+
     .get(function(req, res) {
-      Cars.find(function(err, cars) {
+      Car.find(function (err, cars) {
         if (err)
           res.send(err);
 
@@ -99,16 +105,16 @@ router.route('/cars')
 	router.route('/cars/:car_id')
     // get the car with that id (accessed at GET http://localhost:8080/api/car/:car_id)
     .get(function(req, res) {
-        Cars.findById(req.params.car_id, function(err, car) {
+      Car.findById(req.params.car_id, function(err, car) {
             if (err)
                 res.send(err);
             res.json(car);
         });
     })
-	
-	.put(function(req, res) {
-        // use our bear model to find the bear we want
-        Cars.findById(req.params.car_id, function(err, car) {
+
+    //update 
+	  .put(function(req, res) {
+    Car.findById(req.params.car_id, function(err, car) {
             if (err)
                 res.send(err);
             car.name = req.body.name;  // update the car info
@@ -122,8 +128,9 @@ router.route('/cars')
 
         });
     })
+
 	  .delete(function(req, res) {
-        Cars.remove({
+      Car.remove({
             _id: req.params.car_id
         }, function(err, car) {
             if (err)
@@ -132,6 +139,5 @@ router.route('/cars')
             res.json({ message: 'Successfully deleted' });
         });
     });
-
 
 module.exports = app;
