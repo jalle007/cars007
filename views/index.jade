@@ -1,5 +1,22 @@
 ﻿extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+ a(href='/add', title='add') add new
+ hr
+ p
+  table
+   tbody
+    each car in locals.cars
+     tr
+      td(style='width:30%;')
+       | Name: #{car.name}
+       p
+       | Model: #{car.model}
+       p
+       | Year:   #{car.year}
+      td(style='width:30%;')
+       img(src= car.picture, width='100')
+      td(style='width:30%;')
+       form(method='POST' action='cars/#{car._id}?_method=DELETE')
+        <button type="submit">Delete</button>
+        //a(href='/delete', title='delete') delete

@@ -1,0 +1,18 @@
+﻿extends layout
+
+block content
+  h1= title
+  p Add new car
+  form(action='/upload',method='post',enctype="multipart/form-data")
+   div(style=" float: left;")
+    p
+     input(name='name' placeholder='name')
+     br
+     input(name='model' placeholder='model')
+     br
+     input(name='year' placeholder='year')
+     br
+     input(type='file', name='image')
+     br
+     input(type='submit' value='add car')
+     //div(style=" float: left;")

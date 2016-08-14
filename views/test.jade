@@ -1,0 +1,16 @@
+﻿extends layout
+
+block content
+  .jumbotron
+    h2 Weather report
+    h3 Welcome to the weather report page!
+
+  div.container
+    .navbar.navbar-default(role='navigation')
+      .container-fluid
+        .collapse.navbar-collapse
+          form(name="report", class="navbar-form navbar-left", action="/weather/report", method="POST")
+            input(type="text", name="cities", class="form-control", data-role="tagsinput", placeholder="Type in city and press enter...")
+            input(type="submit", class="btn btn-default", value="Submit")
+
+  div.footer

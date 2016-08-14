@@ -4,13 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
+
+
+var multer = require('multer');
+var upload = multer({ dest: __dirname + '../public/uploads/' });
 
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
 var app = express();
-var router = express.Router(); 
+var router = express.Router();
+var methodOverride = require('method-override');
 
-// view engine setup
+// override with POST having ?_method=DELETE
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -19,19 +25,20 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', router);
-app.use('/api', router);
+//app.use('/api', router);
 
 //app.use('/', routes);
 //app.use('/users', users);
 
 
 router.get('/', function (req, res) {
-  res.json({ message: 'hello! welcome to our api!' });
+  res.redirect('/cars');
 });
 
 
@@ -97,8 +104,8 @@ router.route('/cars')
       Car.find(function (err, cars) {
         if (err)
           res.send(err);
-
-        res.json(cars);
+        res.render('index', {cars: cars});
+      //  res.json(cars);
       });
     }) 
 
@@ -136,8 +143,43 @@ router.route('/cars')
             if (err)
                 res.send(err);
 
-            res.json({ message: 'Successfully deleted' });
-        });
+        res.redirect('/');
+      });
     });
+
+  router.route('/upload')
+    .post(upload.single('image'),function (req, res) {
+  var tmp_path = req.file.path;
+  var target_path = 'uploads/' + req.file.originalname;
+  var src = fs.createReadStream(tmp_path);
+  var dest = fs.createWriteStream(target_path);
+  src.pipe(dest);
+  src.on('end', function() {
+    //save to tb asdasddsa
+    var car = new Car();
+    car.name = req.body.name;
+    car.model = req.body.model;
+    car.year = req.body.year;
+    car.picture = target_path;
+    car.save(function (err) {
+      if (err)
+        res.send(err);
+      res.redirect('/');
+    });
+  });
+  src.on('error', function (err) { res.end('error'); });
+
+
+ });
+
+router.route('/add')
+  .get(  function (req, res) {
+    res.render('add' );
+  });
+
+//app.get('/add', function (req, res) {
+//  res.render('add');
+//});
+
 
 module.exports = app;
