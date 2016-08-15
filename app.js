@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 
 var aws = require('aws-sdk');
 aws.config.update({
-  accessKeyId: "AKIAJZPKIDFGOVKI5ZRA",
-  secretAccessKey: "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"
+  accessKeyId: process.env.accessKeyId, // "AKIAJZPKIDFGOVKI5ZRA",
+  secretAccessKey: process.env.secretAccessKey // "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"
 });
 
 var multerS3 = require('multer-s3');
