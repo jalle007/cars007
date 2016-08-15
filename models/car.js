@@ -2,7 +2,7 @@
 var Schema = mongoose.Schema;
 
 var CarSchema = new Schema({
-  name: String,
+  make: String,
   model: String,
   year: String,
   picture: String

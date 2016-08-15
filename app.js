@@ -8,7 +8,7 @@ var fs = require('fs');
 
 
 var multer = require('multer');
-var upload = multer({ dest: __dirname + '../public/uploads/' });
+var upload = multer({ dest: __dirname + '../tmp/uploads/' });
 
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
@@ -29,6 +29,7 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'tmp')));
 
 app.use('/', router);
 //app.use('/api', router);
@@ -88,7 +89,7 @@ router.route('/cars')
   // create a bear (accessed at POST http://localhost:8080/api/cars)
   .post(function(req, res) {
       var car = new Car(); // create a new instance of the Car model
-      car.name = req.body.name;
+      car.make = req.body.make;
       car.model = req.body.model;
       car.year = req.body.year;
 
@@ -124,7 +125,7 @@ router.route('/cars')
     Car.findById(req.params.car_id, function(err, car) {
             if (err)
                 res.send(err);
-            car.name = req.body.name;  // update the car info
+            car.make = req.body.make;  // update the car info
 
             // save the car
             car.save(function(err) {
@@ -150,17 +151,19 @@ router.route('/cars')
   router.route('/upload')
     .post(upload.single('image'),function (req, res) {
   var tmp_path = req.file.path;
-  var target_path = 'uploads/' + req.file.originalname;
+  var target_path = 'tmp/uploads/' + req.file.originalmake;
+  console.log(target_path);
+
   var src = fs.createReadStream(tmp_path);
   var dest = fs.createWriteStream(target_path);
   src.pipe(dest);
   src.on('end', function() {
     //save to tb asdasddsa
     var car = new Car();
-    car.name = req.body.name;
+    car.make = req.body.make;
     car.model = req.body.model;
     car.year = req.body.year;
-    car.picture = target_path;
+    car.picture = 'uploads/' + req.file.originalname;
     car.save(function (err) {
       if (err)
         res.send(err);

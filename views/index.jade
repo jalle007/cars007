@@ -1,22 +1,25 @@
 ﻿extends layout
 
 block content
- a(href='/add', title='add') add new
+ h1 Car list
+ a(href='/add') Add new 
  hr
  p
   table
    tbody
     each car in locals.cars
-     tr
+     tr.border_bottom
       td(style='width:30%;')
-       | Name: #{car.name}
+       | Make: #{car.make}
        p
        | Model: #{car.model}
        p
        | Year:   #{car.year}
       td(style='width:30%;')
-       img(src= car.picture, width='100')
-      td(style='width:30%;')
-       form(method='POST' action='cars/#{car._id}?_method=DELETE')
-        <button type="submit">Delete</button>
-        //a(href='/delete', title='delete') delete
+       img(src= car.picture, height='100')
+      td(style='width:30%;text-align: right; vertical-align: bottom; padding-bottom:10px;')
+       //form(method='POST' action='cars/#{car._id}?_method=DELETE')
+       <form action="cars/#{car._id}?_method=DELETE" method="POST">
+       <button type="submit">Delete</button></form>
+       //<form action="cars/#{car._id}?_method=PUT" method="POST">
+       //<button type="submit">Edit</button></form>
