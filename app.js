@@ -1,11 +1,17 @@
 ﻿var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var fs = require('fs');
+//var fs = require('fs');
 
+var aws = require('aws-sdk');
+aws.config.update({
+  accessKeyId: "AKIAJZPKIDFGOVKI5ZRA",
+  secretAccessKey: "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"
+});
+
+var multerS3 = require('multer-s3');
 
 var multer = require('multer');
 var upload = multer({ dest: __dirname + '../tmp/uploads/' });
@@ -15,6 +21,22 @@ var upload = multer({ dest: __dirname + '../tmp/uploads/' });
 var app = express();
 var router = express.Router();
 var methodOverride = require('method-override');
+
+var fName = "car" + Date.now() + ".png";
+var s3 = new aws.S3( );
+var upload2 = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'jalle007',
+    metadata: function(req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: function(req, file, cb) {
+      cb(null, fName);
+    }
+  })
+});
 
 // override with POST having ?_method=DELETE
 app.set('views', path.join(__dirname, 'views'));
@@ -148,32 +170,31 @@ router.route('/cars')
       });
     });
 
-  router.route('/upload')
-    .post(upload.single('image'),function (req, res) {
-  var tmp_path = req.file.path;
-  var target_path = 'tmp/uploads/' + req.file.originalmake;
-  console.log(target_path);
 
-  var src = fs.createReadStream(tmp_path);
-  var dest = fs.createWriteStream(target_path);
-  src.pipe(dest);
-  src.on('end', function() {
+router.route('/upload2')
+ .post(  upload2.array('image', 3),
+  function (req, res, next) {
+   
+
+    //var params = { Bucket: 'jalle007', Key: fName, Expires: 60 };
+    //var url = s3.getSignedUrl('getObject', params, function (err, url) {
+    //  if (url) console.log("The URL is ", url);
+    //});
+
     //save to tb asdasddsa
     var car = new Car();
     car.make = req.body.make;
     car.model = req.body.model;
     car.year = req.body.year;
-    car.picture = 'uploads/' + req.file.originalname;
+    car.picture = "https://jalle007.s3.amazonaws.com/"+fName;
     car.save(function (err) {
       if (err)
         res.send(err);
       res.redirect('/');
     });
+
+    //res.send('Successfully uploaded ' + req.files.length + ' files!');
   });
-  src.on('error', function (err) { res.end('error'); });
-
-
- });
 
 router.route('/add')
   .get(  function (req, res) {

@@ -20,6 +20,8 @@
     "morgan": "~1.3.0",
     "multer": "^1.2.0",
     "serve-favicon": "~2.1.3",
-    "stylus": "0.42.3"
+    "stylus": "0.42.3",
+    "multer-s3":  "2.3.2",
+    "aws-sdk": "2.3.2" 
   }
 }

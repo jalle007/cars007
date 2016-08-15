@@ -1,0 +1,25 @@
+﻿
+  router.route('/upload')
+    .post(upload.single('image'),function (req, res) {
+  var tmp_path = req.file.path;
+  var target_path = 'tmp/uploads/' + req.file.originalmake;
+  console.log(target_path);
+
+  var src = fs.createReadStream(tmp_path);
+  var dest = fs.createWriteStream(target_path);
+  src.pipe(dest);
+  src.on('end', function() {
+    //save to tb asdasddsa
+    var car = new Car();
+    car.make = req.body.make;
+    car.model = req.body.model;
+    car.year = req.body.year;
+    car.picture = 'uploads/' + req.file.originalname;
+    car.save(function (err) {
+      if (err)
+        res.send(err);
+      res.redirect('/');
+    });
+  });
+  src.on('error', function (err) { res.end('error'); });
+ });
