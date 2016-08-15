@@ -14,7 +14,7 @@ aws.config.update({
 var multerS3 = require('multer-s3');
 
 var multer = require('multer');
-var upload = multer({ dest: __dirname + '../tmp/uploads/' });
+//var upload = multer({ dest: __dirname + '../tmp/uploads/' });
 
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
