@@ -7,8 +7,11 @@ var bodyParser = require('body-parser');
 
 var aws = require('aws-sdk');
 aws.config.update({
-  accessKeyId: process.env.accessKeyId, // "AKIAJZPKIDFGOVKI5ZRA",
-  secretAccessKey: process.env.secretAccessKey // "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"
+  accessKeyId:   "AKIAJZPKIDFGOVKI5ZRA",
+  secretAccessKey:   "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"
+
+  //accessKeyId: process.env.accessKeyId, // "AKIAJZPKIDFGOVKI5ZRA",
+  //secretAccessKey: process.env.secretAccessKey // "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"
 });
 
 var multerS3 = require('multer-s3');
@@ -19,8 +22,12 @@ var multer = require('multer');
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
 var app = express();
+var exports = module.exports = {};
+
 var router = express.Router();
 var methodOverride = require('method-override');
+
+app.set('foo', 'bar');
 
 var fName = "car" + Date.now() + ".png";
 var s3 = new aws.S3( );
@@ -38,6 +45,7 @@ var upload2 = multer({
   })
 });
 
+
 // override with POST having ?_method=DELETE
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -51,7 +59,6 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'tmp')));
 
 app.use('/', router);
 //app.use('/api', router);
@@ -207,3 +214,7 @@ router.route('/add')
 
 
 module.exports = app;
+
+exports.closeServer = function () {
+  server.close();
+};

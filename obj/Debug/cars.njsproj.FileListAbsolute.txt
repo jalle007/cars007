@@ -1,2 +1,2 @@
-D:\Projects\cars\cars\bin\Microsoft.NodejsTools.WebRole.dll
-D:\Projects\cars\cars\obj\Debug\cars.njsprojResolveAssemblyReference.cache
+D:\Projects\cars2\cars\bin\Microsoft.NodejsTools.WebRole.dll
+D:\Projects\cars2\cars\obj\Debug\cars.njsprojResolveAssemblyReference.cache
