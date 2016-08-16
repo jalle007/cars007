@@ -7,11 +7,10 @@ var bodyParser = require('body-parser');
 
 var aws = require('aws-sdk');
 aws.config.update({
-  accessKeyId:   "AKIAJZPKIDFGOVKI5ZRA",
-  secretAccessKey:   "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"
+ 
 
-  //accessKeyId: process.env.accessKeyId, // "AKIAJZPKIDFGOVKI5ZRA",
-  //secretAccessKey: process.env.secretAccessKey // "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"
+  accessKeyId: process.env.accessKeyId,  
+ secretAccessKey: process.env.secretAccessKey  
 });
 
 var multerS3 = require('multer-s3');
@@ -109,8 +108,6 @@ app.use(function (err, req, res, next) {
 });
 
 var mongoose = require('mongoose');
-//mongoose.connect('mongodb://jalle007:12345678@jello.modulusmongo.net:27017/xeS9obyn'); // connect to our database
-
 mongoose.connect('mongodb://heroku_5kqft6r4:i358iihreqt8stta42n8ok8ro4@ds061354.mlab.com:61354/heroku_5kqft6r4');
 var Car = require('./models/car');
  
